@@ -25,8 +25,13 @@ class Header implements ArrayAccess
         $source = preg_replace('/(\n|\r|\r\n)(\t| )+/', ' ', $source);
 
         foreach (preg_split('/(\n|\r|\r\n)/', $source) as $line) {
-            $colon = strpos($line, ':');
 
+            // Copiado de Mail_MimeDecode
+            if (substr($line, 0, 5) == 'From ') {
+                $line = 'Return-Path: ' . substr($line, 5);
+            }
+
+            $colon = strpos($line, ':');
             if ($colon !== false) {
                 $name = substr($line, 0, $colon);
                 $value = ltrim(substr($line, $colon + 1));
@@ -40,7 +45,7 @@ class Header implements ArrayAccess
                 $value = new MediaType($value);
             }
 
-            $entries[$idx] = (object)compact('name', 'value');
+            $entries[$idx] = compact('name', 'value');
             $index[$lower_name][] = $idx;
 
             $idx++;
@@ -69,7 +74,7 @@ class Header implements ArrayAccess
 
         $header = [];
         foreach ($this->index[$name] as $index) {
-            $header[] = $this->entries[$index]->value;
+            $header[] = $this->entries[$index]['value'];
         }
 
         return $header;
@@ -102,6 +107,11 @@ class Header implements ArrayAccess
         }
 
         return join($join, $lines);
+    }
+
+    public function getAll()
+    {
+        return $this->entries;
     }
 
     public function offsetExists(mixed $offset): bool
