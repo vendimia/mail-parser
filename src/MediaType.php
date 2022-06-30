@@ -2,10 +2,12 @@
 
 namespace Vendimia\MailParser;
 
+use Stringable;
+
 /**
  * Class for interface media types, used in Content-Type header
  */
-class MediaType
+class MediaType implements Stringable
 {
     public $type;
     public $subtype;
@@ -51,5 +53,22 @@ class MediaType
         $this->type = $type;
         $this->subtype = $subtype;
         $this->suffix = $suffix ?? null;
+    }
+
+    public function __toString()
+    {
+        $result = $this->type . '/' . $this->subtype;
+        if ($this->suffix) {
+            $result .= '+' . $this->suffix;
+        }
+        if ($this->parameters) {
+            $parameters = [];
+            foreach ($this->parameters as $key => $value) {
+                $parameters[] = "{$key}={$value}";
+            }
+            $result .= ';' . join(';', $parameters);
+        }
+
+        return $result;
     }
 }
