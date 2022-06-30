@@ -3,9 +3,13 @@
 namespace Vendimia\MailParser;
 
 use ArrayAccess;
+use Iterator;
 
-class Message implements ArrayAccess
+class Message implements ArrayAccess, Iterator
 {
+    /** Last 'traversed' part */
+    private $last_traversed_part = false;
+
     public function __construct(
         public Header $header,
         public Body $body,
@@ -34,6 +38,14 @@ class Message implements ArrayAccess
         return new self($header, $body);
     }
 
+    /**
+     * Returns the body parts count
+     */
+    public function partsCount(): int
+    {
+        return count($this->body->parts) + 1;
+    }
+
     public function offsetExists(mixed $offset): bool
     {
         return key_exists($offset, $this->body->parts);
@@ -52,5 +64,32 @@ class Message implements ArrayAccess
     public function offsetUnset(mixed $offset): void
     {
         unset($this->body->parts[$offset]);
+    }
+
+    public function current(): mixed
+    {
+        return $this->last_traversed_part;
+    }
+
+    public function key(): mixed
+    {
+        return key($this->body->parts);
+    }
+
+    public function next(): void
+    {
+        next($this->body->parts);
+        $this->last_traversed_part = current($this->body->parts);
+    }
+
+    public function rewind(): void
+    {
+        reset($this->body->parts);
+        $this->last_traversed_part = current($this->body->parts);
+    }
+
+    public function valid(): bool
+    {
+        return $this->last_traversed_part !== false;
     }
 }
