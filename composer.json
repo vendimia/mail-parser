@@ -1,0 +1,21 @@
+{
+    "name": "vendimia/mail-parser",
+    "description": "MIME mail parser",
+    "license": "GPL-3.0-or-later",
+    "require": {
+        "php": ">=8.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "Vendimia\\MailParser\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "Oliver Etchebarne",
+            "email": "yo@drmad.org",
+            "homepage": "https://drmad.org",
+            "role": "developer"
+        }
+    ]
+}
