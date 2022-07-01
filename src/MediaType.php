@@ -9,9 +9,19 @@ use Stringable;
  */
 class MediaType implements Stringable
 {
+    /** String before slash */
     public $type;
+
+    /** String after slash */
     public $subtype;
+
+    /** Complete media type, type/subtype */
+    public $full_type;
+
+    /** Suffix to subtype, after plus */
     public $suffix = null;
+
+    /** Any extra parameters, separated by semicolons */
     public $parameters = [];
 
     public function __construct($media_type)

@@ -5,7 +5,19 @@ namespace Vendimia\MailParser;
 use ArrayAccess;
 
 /**
- * Parses the message header
+ * RFC822 Header parser.
+ *
+ * Header lines will be [unfolded][1] and can be accessed in a case-insensitive
+ * fashion using this object as an array. If there are multiple header lines
+ * with the same name, they will be joined using a comma. This is the behavior
+ * of the method `getLine()`.
+ *
+ * To get all the header values as an array, use method `get()`.
+ *
+ * This class can be used with other header-like elements, like the body in a
+ * message/delivery-status part.
+ *
+ * [1] https://datatracker.ietf.org/doc/html/rfc822#section-3.1.1
  */
 class Header implements ArrayAccess
 {
@@ -86,7 +98,7 @@ class Header implements ArrayAccess
     }
 
     /**
-     * Returns whether header $name exists
+     * Returns whether header $name exists or not
      */
     public function has($name): bool
     {
@@ -99,7 +111,7 @@ class Header implements ArrayAccess
      * If there is only one header line, then returns it directly. Useful with
      * some special headers treated as object, like Content-Type.
      */
-    public function getLine($name, $join = ',', $default = null)
+    public function getLine($name, $join = ',', $default = null): ?string
     {
         $lines = $this->get($name, default: $default);
 
@@ -114,21 +126,33 @@ class Header implements ArrayAccess
         return join($join, $lines);
     }
 
-    public function getAll()
+    /**
+     * Returns an array of all headers with the format [name, value]
+     */
+    public function getAll(): array
     {
         return $this->entries;
     }
 
+    /**
+     * ArrayAccess implementation
+     */
     public function offsetExists(mixed $offset): bool
     {
         return $this->has($offset);
     }
 
+    /**
+     * ArrayAccess implementation
+     */
     public function offsetGet(mixed $offset): mixed
     {
         return $this->getLine($offset);
     }
 
+    /**
+     * ArrayAccess implementation
+     */
     public function offsetSet(mixed $offset, mixed $value): void
     {
 
