@@ -111,7 +111,7 @@ class Header implements ArrayAccess
      * If there is only one header line, then returns it directly. Useful with
      * some special headers treated as object, like Content-Type.
      */
-    public function getLine($name, $join = ',', $default = null): ?string
+    public function getLine($name, $join = ',', $default = null)
     {
         $lines = $this->get($name, default: $default);
 
