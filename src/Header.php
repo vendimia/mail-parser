@@ -26,6 +26,11 @@ class Header implements ArrayAccess
 
         foreach (preg_split('/(\n|\r|\r\n)/', $source) as $line) {
 
+            // Ignoramos líneas vacías
+            if (!$line) {
+                continue;
+            }
+
             // Copiado de Mail_MimeDecode
             if (substr($line, 0, 5) == 'From ') {
                 $line = 'Return-Path: ' . substr($line, 5);
