@@ -62,6 +62,7 @@ class MediaType implements Stringable
 
         $this->type = $type;
         $this->subtype = $subtype;
+        $this->full_type = "{$type}/{$subtype}";
         $this->suffix = $suffix ?? null;
     }
 
